@@ -42,8 +42,8 @@ useState():
 ```javascript
 let [a, b] = useState('남자 코트 추천'
 
+<p onClick={함수}>버튼</p>
 
 ```
 -> a 는 값 자체 b는 상태를 갱신하는 함수
-<p onClick={함수}>
 클로저 사용도 가능
