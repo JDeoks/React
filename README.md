@@ -176,7 +176,7 @@ function Modal(props){
 이벤트가 상위 html로 퍼지는 것  
 ex. 하위 뷰를 클릭하면 상위 뷰도 클릭한 것이 됨
 
-## 12강
+## 13강
 
 ### arr.filter():
 
