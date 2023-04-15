@@ -44,9 +44,9 @@ function App() {
       </div>
 
       {/* list map으로 출력 */}
-      {titleTexts.map((a, cnt) => {
+      {titleTexts.map((a, idx) => {
         return (
-          <div className="list">
+          <div className="list" key={idx}>
             <h4
               onClick={() => {
                 setShowModal(true);
@@ -54,50 +54,27 @@ function App() {
             >
               {a}{' '}
               <span
-                onClick={cnt => {
+                onClick={() => {
                   let copy = [...likes];
-                  copy[cnt] += 1;
+                  copy[idx] += 1;
                   setLikes(copy);
                 }}
               >
-                👍 {likes[cnt]}
+                👍 {likes[idx]}
               </span>
             </h4>
             <p>2월 17일 발행</p>
           </div>
         );
       })}
-      {/* <div className="list">
-        <h4>
-          {titleText[0]}
-          <span
-            onClick={() => {
-              setLike([like[0] + 1]);
-            }}
-          >
-            👍
-          </span>
-          {like[0]}{' '}
-        </h4>
-        <p>2월 17일 발행</p>
-      </div>
 
-      <div className="list">
-        <h4>{titleText[1]}</h4>
-        <p>2월 17일 발행</p>
-      </div>
-
-      <div className="list">
-        <h4
-          onClick={() => {
-            showModal == true ? setShowModal(false) : setShowModal(true);
-          }}
-        >
-          {titleText[2]}
-        </h4>
-        <p>2월 17일 발행</p>
-      </div> */}
-      {showModal == true ? <Modal titleText={titleTexts[0]} /> : null}
+      {showModal === true ? (
+        <Modal
+          color="orange"
+          titleTexts={titleTexts}
+          setTitleTexts={setTitleTexts}
+        />
+      ) : null}
     </div>
   );
 }
@@ -105,10 +82,19 @@ function App() {
 function Modal(props) {
   return (
     <>
-      <div className="modal">
-        <h4>{props.titleText}</h4>
+      <div className="modal" style={{ background: props.color }}>
+        <h4>{props.titleTexts[0]}</h4>
         <p>날짜</p>
         <p>상세내용</p>
+        <button
+          onClick={() => {
+            let copy = [...props.titleTexts];
+            copy[0] = '여자 코트 추천';
+            props.setTitleTexts(copy);
+          }}
+        >
+          첫 글 여자코트로 변경
+        </button>
       </div>
     </>
   );

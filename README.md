@@ -23,7 +23,7 @@ class 대신에 className
 
 데이터 바인딩:
 
-```javascript
+```jsx
 let post = ‘스트링’;
 <p>{post}</p>
 ```
@@ -31,7 +31,7 @@ let post = ‘스트링’;
 id, className다 가능
 스타일 입력
 
-```javascript
+```jsx
 style = {{스타일명: ‘값’}}
 ```
 
@@ -48,7 +48,7 @@ satate변수가 바뀌면 그 변수를 쓰던 html자체가 자동으로 전부
 useState():  
 React 컴포넌트에서 상태(state)를 관리하기 위해 사용
 
-```javascript
+```jsx
 let [a, b] = useState();
 ```
 
@@ -57,7 +57,7 @@ a에 그냥 대입연산은 안됨, setter함수 사용
 
 ### 5강
 
-```javascript
+```jsx
 <span onClick={함수이름}>버튼</span>
 // 클로저 사용
 <span onClick={()=>{b(3)}}>버튼</span>
@@ -73,7 +73,7 @@ a에 그냥 대입연산은 안됨, setter함수 사용
 usestate의 setter 함수는 포인터 값 다를 때만 state변수 갱신  
 setter 함수로 arr값 넣으려면 아래와 같이 해야 함
 
-```javascript
+```jsx
 let copy = [...arr];
 // 대괄호를 벗긴 후 다시 입혀서 배열 생성
 setterFunc(copy);
@@ -86,7 +86,7 @@ swiftUI의 뷰와 비슷
 여러 요소를 축약해서 표시가능  
 반복적인 html 축약, 큰 페이지, 자주 변경되는 요소등에 사용
 
-```javascript
+```jsx
 <Compo />;
 function Modal() {
   return <></>;
@@ -98,7 +98,7 @@ function Modal() {
 state 변수 에 따라 컴포넌트 visible 결정하기  
 {}안에서는 if, for 사용 불가
 
-```javascript
+```jsx
 let [showModal, setShowModal] = useState(false)
 ...
 {showModal == true ? <Modal /> : null}
@@ -113,7 +113,7 @@ arr 자료 개수만큼 코드 실행
 a: arr안에 있는 요소, i: 0..<n int(생략가능)  
 return값은 arr에 저장됨
 
-```javascript
+```jsx
 [1, 2, 3].map((a, i) => {
   return a * 3;
   console.log(i);
@@ -125,18 +125,23 @@ return값은 arr에 저장됨
 ### 10강
 
 [props:](https://www.snugarchive.com/blog/react-components-and-props/)  
-상위 컴포넌트에서 하위 컴포넌트로 데이터를 전달해주는 객체
+상위 컴포넌트에서 하위 컴포넌트로 데이터를 전달해주는 객체  
+swiftUI에서 view 구조체에 parameter 전해주는 것과 같음  
+부모 -> 자식만 가능
 
-```javascript
+```jsx
 <Modal titleText={'title'} />
 ...
 function Modal(props){
   return(
-    <div>
+    <>
       <h4>{props.titleText}</h4>
-    </div>
+    </>
   )
 }
+// 함수 전달
+<Modal setTitleTexts = {setTitleTexts} />
 ```
 
-swiftUI에서 view 구조체에 parameter 전해주는 것과 같음
+포인터, 함수도 전달 가능  
+포인터와 함수를 전달함으로써 자식간의 데이터 전달 가능한듯
