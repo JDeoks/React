@@ -11,6 +11,8 @@ function App() {
   ]);
   let [likes, setLikes] = useState([0, 0, 0]);
   let [showModal, setShowModal] = useState(false);
+  let [textIdx, setTextIdx] = useState(0);
+  let [inputValue, setInputValue] = useState('');
 
   function addLikeNum() {
     console.log(1);
@@ -21,27 +23,6 @@ function App() {
       <div className="black-nav">
         <h4 style={{ fontSize: '16px' }}>블로그임</h4>
       </div>
-      <div>
-        <button
-          onClick={() => {
-            let copy = [...titleTexts];
-            copy = copy.sort();
-            setTitleTexts(copy);
-          }}
-        >
-          가나다 순으로 정렬
-        </button>
-
-        <button
-          onClick={() => {
-            let copy = [...titleTexts];
-            copy[0] = '여자 코트 추천';
-            setTitleTexts(copy);
-          }}
-        >
-          여자로 변경
-        </button>
-      </div>
 
       {/* list map으로 출력 */}
       {titleTexts.map((a, idx) => {
@@ -49,6 +30,7 @@ function App() {
           <div className="list" key={idx}>
             <h4
               onClick={() => {
+                setTextIdx(idx);
                 setShowModal(true);
               }}
             >
@@ -63,18 +45,49 @@ function App() {
                 👍 {likes[idx]}
               </span>
             </h4>
-            <p>2월 17일 발행</p>
+            <p>
+              2월 17일 발행
+              <span
+                onClick={e => {
+                  setTitleTexts(titleTexts.filter((titleText, i) => i != idx));
+                  titleTexts.splice(0, 2);
+                  setLikes(likes.filter((like, i) => i != idx));
+                }}
+              >
+                삭제
+              </span>
+            </p>
           </div>
         );
       })}
 
+      {/* 모달컴포넌트 */}
       {showModal === true ? (
         <Modal
-          color="orange"
           titleTexts={titleTexts}
           setTitleTexts={setTitleTexts}
+          textIdx={textIdx}
         />
       ) : null}
+
+      {/* 텍스트 필드 */}
+      <input
+        onChange={e => {
+          setInputValue(e.target.value);
+          // console.log(e.target.value);
+        }}
+      />
+      {/* 등록 버튼 */}
+      <button
+        onClick={() => {
+          let textCopy = [inputValue, ...titleTexts];
+          let likeCopy = [0, ...likes];
+          setTitleTexts(textCopy);
+          setLikes(likeCopy);
+        }}
+      >
+        등록
+      </button>
     </div>
   );
 }
@@ -83,7 +96,7 @@ function Modal(props) {
   return (
     <>
       <div className="modal" style={{ background: props.color }}>
-        <h4>{props.titleTexts[0]}</h4>
+        <h4>{props.titleTexts[props.textIdx]}</h4>
         <p>날짜</p>
         <p>상세내용</p>
         <button
@@ -93,7 +106,7 @@ function Modal(props) {
             props.setTitleTexts(copy);
           }}
         >
-          첫 글 여자코트로 변경
+          글제목 변경
         </button>
       </div>
     </>
