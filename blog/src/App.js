@@ -1,5 +1,6 @@
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
+import React from 'react';
 import { useState } from 'react';
 
 function App() {
@@ -13,10 +14,6 @@ function App() {
   let [showModal, setShowModal] = useState(false);
   let [textIdx, setTextIdx] = useState(0);
   let [inputValue, setInputValue] = useState('');
-
-  function addLikeNum() {
-    console.log(1);
-  }
 
   return (
     <div className="App">
@@ -49,9 +46,11 @@ function App() {
               2월 17일 발행
               <span
                 onClick={e => {
-                  setTitleTexts(titleTexts.filter((titleText, i) => i != idx));
-                  titleTexts.splice(0, 2);
-                  setLikes(likes.filter((like, i) => i != idx));
+                  //titleTexts idx번째 요소 삭제
+                  setTitleTexts(titleTexts.filter((titleText, i) => i !== idx));
+                  //splice로도 가능
+                  // titleTexts.splice(0, 2);
+                  setLikes(likes.filter((like, i) => i !== idx));
                 }}
               >
                 삭제
@@ -67,6 +66,7 @@ function App() {
           titleTexts={titleTexts}
           setTitleTexts={setTitleTexts}
           textIdx={textIdx}
+          setShowModal={setShowModal}
         />
       ) : null}
 
@@ -93,20 +93,33 @@ function App() {
 }
 
 function Modal(props) {
+  let [inputText, setInputText] = useState('');
   return (
     <>
       <div className="modal" style={{ background: props.color }}>
         <h4>{props.titleTexts[props.textIdx]}</h4>
         <p>날짜</p>
         <p>상세내용</p>
+        <input
+          onChange={e => {
+            setInputText(e.target.value);
+          }}
+        ></input>
         <button
           onClick={() => {
             let copy = [...props.titleTexts];
-            copy[0] = '여자 코트 추천';
+            copy[props.textIdx] = inputText;
             props.setTitleTexts(copy);
           }}
         >
           글제목 변경
+        </button>
+        <button
+          onClick={() => {
+            props.setShowModal(false);
+          }}
+        >
+          모달창 닫기
         </button>
       </div>
     </>

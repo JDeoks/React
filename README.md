@@ -196,3 +196,42 @@ titleTexts.splice(0, 1);
 ```
 
 0..<1 삭제
+
+## 14강
+
+### class 사용 컴포넌트 생성
+
+```jsx
+class Modal extends React.Component {
+  constructor() {
+    super();
+    //state 변수
+    this.state = {
+      name: 'kim',
+      age: 20,
+    };
+  }
+  render() {
+    return (
+      <>
+        /* state변수 사용 */
+        <div>hello {this.state.age}</div>
+        <button
+          onClick={() => {
+            // 업데이트
+            this.setState({ age: 21 });
+          }}
+        >
+          21
+        </button>
+      </>
+    );
+  }
+}
+```
+
+## 15강
+
+### github이용 배포
+
+[link](https://jdeoks.github.io)
