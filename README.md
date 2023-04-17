@@ -313,6 +313,7 @@ string 중간에 변수 넣을땐 중괄호로 묶음
 ### 페이지 라우팅
 
 요청한 경로에 따라 다른 페이지를 보여주는 것  
+ex. youtube.com/channel/  
 MPA에서는 각 경로마다 다른 html파일을 보냄  
 리액트는 index.html하나만 사용.  
 세부 경로 접속하면 기존의 html 지우고 새로운 컴포넌트 보임
@@ -325,6 +326,7 @@ npm install react-router-dom@6
 index.js에 BrowserRouter 태그 추가
 
 ```jsx
+// index.js
 import { BrowserRouter } from 'react-router-dom';
 root.render(
   <React.StrictMode>
@@ -333,4 +335,56 @@ root.render(
     </BrowserRouter>
   </React.StrictMode>
 );
+// App.js
+import { Routes, Route, Link } from 'react-router-dom';
+// ...
+// App()  <div className="App"> 내부
+<Routes>
+  <Route path="/detail" element={<Detail />} />
+  // 404 페이지 대신에 표시(설정해 놓은 것 이외의 모든 것)
+  <Route path="*" element={<div>없는 페이지</div>} />
+</Routes>;
+// Link
+<Link to="/detail">상세페이지</Link>;
+```
+
+## 2-6강
+
+### useNavigate
+
+event가 발생했을 때, url 조작 가능
+
+```jsx
+import { useNavigate } from 'react-router-dom';
+//...
+let navigate = useNavigate();
+<p onClick={()=>{navigate('/detail')}}>
+navigate(-1)
+// 뒤로가기 앞으로 가기 버튼과 같음
+```
+
+### Nested Routes
+
+다른 경로가 더 붙었을 때 중첩 Route 태그 사용  
+유사한 페이지가 여럿 있을 때 사용
+
+```jsx
+<Route path="/detail/member" element={<Member />} />
+// 위 방법 대신 아래 사용 가능
+<Route path="/detail" element={<Detail />}>
+  <Route path="/member" element={<Member />} />
+</Route>
+```
+
+이 때, 상위경로 컴포넌트에는 Outlet 사용해서 하위경로 보일 위치 표시
+
+```jsx
+function Detail() {
+  return (
+    <div>
+      <h4>detail</h4>
+      <Outlet></Outlet>
+    </div>
+  );
+}
 ```

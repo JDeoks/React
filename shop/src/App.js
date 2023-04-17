@@ -9,30 +9,53 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useState } from 'react';
 import data from './data.js';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link, Outlet } from 'react-router-dom';
+import Detail from './routes/Detail';
+import { useNavigate } from 'react-router-dom';
 
 function App() {
   let [shoes, setShoes] = useState(data);
+  let navigate = useNavigate();
+
   return (
     <div className="App">
+      {/* 네비게이션 바 */}
       <Navbar bg="dark" variant="dark">
         <Container>
-          <Navbar.Brand href="#home">ShoeShop</Navbar.Brand>
+          <Navbar.Brand href="/">ShoeShop</Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#features">Cart</Nav.Link>
+            <Nav.Link href="/">Home</Nav.Link>
+            <Nav.Link href="/detail">Detail</Nav.Link>
+            <Nav.Link href="/event">Event</Nav.Link>
           </Nav>
         </Container>
       </Navbar>
 
-      <div className="main-bg"></div>
-      <Container>
-        <Row>
-          {shoes.map((shoe, idx) => {
-            return <Card shoe={shoe} idx={idx + 1} />;
-          })}
-        </Row>
-      </Container>
+      {/* 세부경로 라우팅 */}
+
+      <Routes>
+        {/* home */}
+        <Route
+          path="/"
+          element={
+            <>
+              <div className="main-bg"></div>
+              <Container>
+                <Row>
+                  {shoes.map((shoe, idx) => {
+                    return <Card shoe={shoe} idx={idx + 1} />;
+                  })}
+                </Row>
+              </Container>
+            </>
+          }
+        />
+        <Route path="/detail" element={<Detail />} />
+        <Route path="/event" element={<Event />}>
+          <Route path="one" element={<h4>첫주문 시 양배추즙 서비스</h4>} />
+          <Route path="two" element={<h4>생일기념 쿠폰 받기</h4>} />
+        </Route>
+      </Routes>
     </div>
   );
 }
@@ -46,6 +69,31 @@ function Card(props) {
         <p>{props.shoe.content}</p>
       </div>
     </Col>
+  );
+}
+
+function Event() {
+  let navigate = useNavigate();
+
+  return (
+    <>
+      <span
+        onClick={() => {
+          navigate('one');
+        }}
+      >
+        one
+      </span>
+      <span
+        onClick={() => {
+          navigate('two');
+        }}
+      >
+        two
+      </span>
+      <h2>오늘의 이벤트</h2>
+      <Outlet></Outlet>
+    </>
   );
 }
 
