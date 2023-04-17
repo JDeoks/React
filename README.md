@@ -124,6 +124,19 @@ return값은 arr에 저장됨
 });
 // [3, 6, 9]
 // log: 0, 1, 2
+
+//컴포넌트처럼 쓸 때
+{
+  ['a', 'b', 'c'].map((a, idx) => {
+    return (
+      <>
+        {a}
+        {idx}
+      </>
+    ); //세미콜론 없애야함
+  });
+}
+// a0 b1 c2
 ```
 
 ## 10강
@@ -235,3 +248,89 @@ class Modal extends React.Component {
 ### github이용 배포
 
 [link](https://jdeoks.github.io)
+
+## 2-1강
+
+### [React-Bootstrap](https://react-bootstrap.netlify.app/)
+
+리액트에서 css 작업을 원활하게 도와주는 라이브러리
+
+## 2-2강
+
+### public 폴더
+
+리액트는 빌드 할 때 js html css 압축하는데,  
+public안에 있는 파일은 압축 되지 않음
+
+### public에 있는 이미지 사용
+
+```jsx
+// 기본
+<img src="/logo192.png" />
+//권장
+<img src={process.env.PUBLIC_URL + '/logo192.png'} />
+```
+
+세부 경로에 배포할 때도 파일 찾기 위함
+
+## 2-3강
+
+### export, import
+
+```jsx
+// export하려는 파일
+let a = 10;
+let b = 100;
+export default { a, b };
+//import하려는 파일
+import { a, b } from './data.js';
+// 변수명 그대로 가져와야함
+```
+
+컴포넌트도 export가능
+
+### object
+
+key, value 저장하는 자료형
+
+```jsx
+// 선언
+let obj = { name: 'kim', age: 20 };
+// 사용
+obj.name;
+```
+
+## 2-4강
+
+```jsx
+<img src={'/img/shoes' + idx + '.jpg'} />
+```
+
+string 중간에 변수 넣을땐 중괄호로 묶음
+
+## 2-5강
+
+### 페이지 라우팅
+
+요청한 경로에 따라 다른 페이지를 보여주는 것  
+MPA에서는 각 경로마다 다른 html파일을 보냄  
+리액트는 index.html하나만 사용.  
+세부 경로 접속하면 기존의 html 지우고 새로운 컴포넌트 보임
+
+### [react-router-dom](https://reactrouter.com/en/main)
+
+리액트로 라우팅 구현할 때 사용하는 라이브러리  
+npm install react-router-dom@6
+
+index.js에 BrowserRouter 태그 추가
+
+```jsx
+import { BrowserRouter } from 'react-router-dom';
+root.render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </React.StrictMode>
+);
+```
