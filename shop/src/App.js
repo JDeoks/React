@@ -19,7 +19,7 @@ function App() {
 
   return (
     <div className="App">
-      {/* 네비게이션 바 */}
+      {/* 네비게이션 바  */}
       <Navbar bg="dark" variant="dark">
         <Container>
           <Navbar.Brand href="/">ShoeShop</Navbar.Brand>
@@ -89,7 +89,7 @@ function Event() {
           navigate('two');
         }}
       >
-        two
+        tw o
       </span>
       <h2>오늘의 이벤트</h2>
       <Outlet></Outlet>
