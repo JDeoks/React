@@ -7,13 +7,20 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import data from './data.js';
 import { Routes, Route, Link, Outlet } from 'react-router-dom';
 import Detail from './routes/Detail';
 import { useNavigate } from 'react-router-dom';
 
 function App() {
+  useEffect(() => {
+    setTimeout(() => {
+      console.log('false');
+      setShowAlert(false);
+    }, 2000);
+  });
+  let [showAlert, setShowAlert] = useState(true);
   let [shoes, setShoes] = useState(data);
   let navigate = useNavigate();
 
@@ -39,6 +46,10 @@ function App() {
           path="/"
           element={
             <>
+              {/* {showAlert ? (
+                <div className="alert alert-warning">2초 안에 구매시 할인</div>
+              ) : null} */}
+              <InputNum />
               <div className="main-bg"></div>
               <Container>
                 <Row>
@@ -50,7 +61,8 @@ function App() {
             </>
           }
         />
-        <Route path="/detail" element={<Detail />} />
+        {/*URL파라미터 페이지 주소를 변수로 받아옴. 아래는 detail/ 뒷 부분을 id에 저장함*/}
+        <Route path="/detail/:id" element={<Detail shoes={shoes} />} />
         <Route path="/event" element={<Event />}>
           <Route path="one" element={<h4>첫주문 시 양배추즙 서비스</h4>} />
           <Route path="two" element={<h4>생일기념 쿠폰 받기</h4>} />
@@ -74,7 +86,6 @@ function Card(props) {
 
 function Event() {
   let navigate = useNavigate();
-
   return (
     <>
       <span
@@ -93,6 +104,26 @@ function Event() {
       </span>
       <h2>오늘의 이벤트</h2>
       <Outlet></Outlet>
+    </>
+  );
+}
+function InputNum() {
+  let [input, setInput] = useState('');
+
+  useEffect(() => {
+    if (Number.isNaN(Number(input))) {
+      alert('그러지마세요');
+    }
+  }, [input]);
+
+  return (
+    <>
+      {/* {showWarn ? <p>그러지마세요</p> : null} */}
+      <input
+        onChange={e => {
+          setInput(e.target.value);
+        }}
+      />
     </>
   );
 }

@@ -388,3 +388,160 @@ function Detail() {
   );
 }
 ```
+
+## 2-7강
+
+### URL파라미터
+
+변수를 사용하여 페이지 주소를 정하고 싶을 때 사용
+
+```jsx
+// URL파라미터
+<Route path="/detail/:id" element={<Detail shoes={shoes} />} />;
+// ...
+
+function Detail(props) {
+  // React Router에서 제공하는 Hook 함수, 현재 URL에서 파라미터 값을 추출
+  let { id } = useParams();
+  return (
+    <>
+      <p>{props.shoes[id].content}</p>
+    </>
+  );
+}
+```
+
+URL파라미터인 id에 /detail/ 뒤의 값이 들어감  
+ex) url이 /detail/2 인 경우에는 id에 2 저장됨  
+호출된 컴포넌트에서는 useParams()을 사용해서 url파라미터값 사용 가능
+
+### find, filter
+
+```jsx
+// 배열에서 일치하는 첫 요소만 반환
+let foundShoes = props.shoes.find(S => S.id == id);
+//일치하는 모든 요소를 반환
+let foundShoes = props.shoes.filter(S => S.id == id);
+```
+
+클로저를 받아서 배열 요소에 적용시킨 후 true를 반환하는 요소만 반환함
+
+## 2-7강
+
+### styled-components
+
+컴포넌트를 만들 때 스타일을 미리 설정할 수 있게 하는 라이브러리
+
+```jsx
+import styled from 'styled-components';
+
+let Box = styled.div`
+  padding: 20px;
+  color: grey;
+`;
+let YellowBtn = styled.button`
+  background: yellow;
+  color: black;
+  padding: 10px;
+`;
+
+function Detail() {
+  return (
+    <div>
+      <Box>
+        <YellowBtn>버튼</YellowBtn>
+      </Box>
+    </div>
+  );
+}
+```
+
+- CSS 파일 오픈할 필요없이 JS 파일에서 바로 스타일 적용 가능
+- 스타일이 다른 JS 파일로 오염되지 않음
+- 페이지 로딩시간 단축
+
+props 사용한 컴포넌트 재활용
+
+```jsx
+import styled from 'styled-components';
+
+let YellowBtn = styled.button`
+  background: ${props => props.bg}};
+  // 조건문도 가능
+  color : ${props => (props.bg == 'blue' ? 'white' : 'black')};
+  padding: 10px;
+`;
+
+<YellowBtn bg="blue">버튼</YellowBtn>;
+```
+
+### CSS 모듈화
+
+CSS파일에서도 JS 파일에 간섭하지 않는 '모듈화' 가능
+컴포넌트명.module.css 파일은 컴포넌트명.js에만 스타일 적용 가능
+
+## 2-8, 2-9강
+
+### 컴포넌트의 Lifecycle
+
+class 문법 사용
+
+```jsx
+class Detail2 extends React.Component {
+  componentDidMount() {
+    //컴포넌트 로드 후 실행
+  }
+  componentDidUpdate() {
+    //컴포넌트 업데이트 후 실행
+  }
+  componentWillUnmount() {
+    //컴포넌트 삭제 전 실행
+  }
+}
+```
+
+### useEffect
+
+생명주기에 따라 side effect처리하는 훅
+
+```jsx
+import { useState, useEffect } from 'react';
+
+function Detail() {
+  useEffect(() => {
+    // 컴포넌트 mount & update 후 실행
+    console.log('안녕');
+  });
+
+  return 생략;
+}
+```
+
+dependencies:  
+두 번째 파라미터로 [] (dependencies) 사용시 mount, []안의 변수 or state 변경시에만 실행
+
+```jsx
+// mount, count 변할때만 실행
+useEffect(() => {
+  실행할코드;
+}, [count]);
+// mount 후 실행
+useEffect(() => {
+  실행할코드;
+}, []);
+```
+
+clean up function
+useEffect 동작하기 전, 컴포넌트 unmount 시에 실행됨  
+타이머 제거, 소켓 연결요청 제거, ajax 요청 중단
+
+```jsx
+// mount, count 변할때만 실행
+useEffect(() => {
+  실행할코드;
+}, [count]);
+// mount 후 실행
+useEffect(() => {
+  실행할코드;
+}, []);
+```
