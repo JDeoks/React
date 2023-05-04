@@ -12,6 +12,7 @@ import data from './data.js';
 import { Routes, Route, Link, Outlet } from 'react-router-dom';
 import Detail from './routes/Detail';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function App() {
   useEffect(() => {
@@ -58,6 +59,21 @@ function App() {
                   })}
                 </Row>
               </Container>
+              <button
+                onClick={() => {
+                  axios
+                    .get('https://codingapple1.github.io/shop/data2.json')
+                    .then(result => {
+                      console.log(result.data);
+                      setShoes([...shoes, ...result.data]);
+                    })
+                    .catch(() => {
+                      console.log('실패');
+                    });
+                }}
+              >
+                get 요청
+              </button>
             </>
           }
         />
@@ -73,9 +89,14 @@ function App() {
 }
 
 function Card(props) {
+  let navigate = useNavigate();
   return (
     <Col sm>
-      <div>
+      <div
+        onClick={() => {
+          navigate('detail/' + props.idx);
+        }}
+      >
         <img src={'/img/shoes' + props.idx + '.jpg'} width="80%" alt="shoes1" />
         <h4>{props.shoe.title}</h4>
         <p>{props.shoe.content}</p>
