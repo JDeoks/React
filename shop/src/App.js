@@ -14,7 +14,7 @@ import Detail from './routes/Detail';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { createContext } from 'react';
-
+import Cart from './routes/Cart.js';
 let Context1 = createContext();
 
 function App() {
@@ -98,7 +98,7 @@ function App() {
           <Route path="two" element={<h4>생일기념 쿠폰 받기</h4>} />
         </Route>
 
-        <Route path="/cart" element={<Event />}></Route>
+        <Route path="/cart" element={<Cart />}></Route>
       </Routes>
     </div>
   );

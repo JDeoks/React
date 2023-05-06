@@ -701,3 +701,85 @@ function Detail() {
   return <div>{재고}</div>;
 }
 ```
+
+## 2-13, 2-14강
+
+### Redux
+
+Redux 사용 시 js 파일 하나에 state들 보관 가능. 모든 컴포넌트가 직접 접근 가능함
+props가 많아질수록 효과적
+
+```
+npm install @reduxjs/toolkit react-redux
+```
+
+store.js 생성
+
+```jsx
+import { configureStore } from '@reduxjs/toolkit';
+
+export default configureStore({
+  reducer: {},
+});
+```
+
+index.js에 provider 추가
+
+```jsx
+import { Provider } from 'react-redux';
+import store from './store.js';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
+  </React.StrictMode>
+);
+```
+
+Redux store에 state 보관
+
+```jsx
+//index.js
+//createSlice로 state 생성
+let user = createSlice({
+  name: 'user',
+  initialState: 'kim',
+});
+let stock = createSlice({
+  name: 'stock',
+  initialState: '[10, 11, 12]',
+});
+// configureStore에 state 등록
+export default configureStore({
+  reducer: {
+    //여기 등록한 state는 모든 컴포넌트가 사용가능
+    user: user.reducer,
+    stock: stock.reducer,
+  },
+});
+```
+
+import해서 사용
+
+```jsx
+import { useSelector } from 'react-redux';
+
+function Cart() {
+  // store에 있던 모든 state가 a에 저장됨
+  let a = useSelector(state => {
+    return state;
+  });
+
+  // 약식 코드, user만 저장
+  let user = useSelector(state => state.user);
+  //한 가지만 출력하려면 .문법
+  console.log(a.user);
+
+  return 생략;
+}
+```
