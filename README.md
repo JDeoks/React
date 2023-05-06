@@ -545,3 +545,159 @@ useEffect(() => {
   실행할코드;
 }, []);
 ```
+
+## 2-10강
+
+### AJAX(Asynchronous JavaScript and XML)
+
+비동기적으로 서버와 브라우저가 데이터를 주고받을 수 있는 기술  
+페이지 전체를 새로고침하지 않고도 서버로부터 데이터를 받아와서 동적으로 화면을 업데이트함  
+npm install axios로 설치  
+import axios from 'axios'로 임포트
+
+```jsx
+// get
+<button
+  onClick={() => {
+    axios
+      .get('url주소')
+      .then(result => {
+        console.log(result.data);
+      })
+      .catch(() => {
+        console.log('실패');
+      });
+  }}
+>
+  get 요청
+</button>
+
+// post
+<button
+  onClick={() => {
+    axios
+    .post('url주소', {name: 'Kim})
+  }}
+>
+```
+
+## 2-11강
+
+### 탭바
+
+```jsx
+<Nav variant="tabs" defaultActiveKey="link0">
+  <Nav.Item>
+    <Nav.Link
+      onClick={() => {
+        탭변경(0);
+      }}
+      eventKey="link0"
+    >
+      버튼0
+    </Nav.Link>
+  </Nav.Item>
+  <Nav.Item>
+    <Nav.Link
+      onClick={() => {
+        탭변경(1);
+      }}
+      eventKey="link1"
+    >
+      버튼1
+    </Nav.Link>
+  </Nav.Item>
+  <Nav.Item>
+    <Nav.Link
+      onClick={() => {
+        탭변경(2);
+      }}
+      eventKey="link2"
+    >
+      버튼2
+    </Nav.Link>
+  </Nav.Item>
+</Nav>;
+
+function TabContent(props) {
+  return [<div>내용0</div>, <div>내용1</div>, <div>내용2</div>][props.탭];
+}
+```
+
+## 2-12강
+
+### 전환 애니메이션
+
+1. 애니메이션 동작 전 className 생성
+2. 동작 후 className 생성
+3. className에 transition 속성 추가
+4. 애니메이션 표현할 때 2번 className 추가
+
+```CSS
+.start {
+  opacity : 0
+}
+.end {
+  opacity : 1;
+  /* 해당 속성이 변할 때 서서히 변경 */
+  transiton: opacity 0.5s;
+}
+```
+
+```jsx
+function TabContent({ tabIdx }) {
+  let [fade, setFade] = useState('');
+
+  useEffect(() => {
+    //100ms 후에
+    setTImeout(() => {
+      setFade('end');
+    }, 100);
+    // 클린업 함수
+    return () => {
+      setFade('');
+    };
+  }, [tabIdx]);
+
+  return (
+    <div className={'start ' + fade}>
+      {[<div>내용0</div>, <div>내용1</div>, <div>내용2</div>][tabIdx]}
+    </div>
+  );
+}
+```
+
+리액트 18버전 이상부터 automatic batch state로 인해 변경함수들이 연달아서 여러개 처리될 때  
+state 변경함수를 다 처리하고 마지막에 한 번만 재렌더링됨->setTImeout으로 나눠서 실행 가능
+
+## 2-12강
+
+### Context API
+
+컴포넌트가 중첩되어 있으면 props를 계속 연결해서 전달해주어야 함  
+Context API 문법으로 props 없이 state 공유가능
+사용하지 않는 컴포넌트들도 Context안에 있으면 재렌더링됨
+
+```jsx
+// Context 객체 생성
+export let Context1 = React.createContext();
+function App() {
+  let [stock, setStock] = useState([10, 11, 12]);
+
+  return (
+    //Context1로 감싼 모든 컴포넌트와 그 자식컴포넌트는 state를 props 전송없이 직접 사용
+    <Context1.Provider value={{ 재고, shoes }}>
+      <Detail shoes={shoes} />
+    </Context1.Provider>
+  );
+}
+
+import { useState, useEffect, useContext } from 'react';
+import { Context1 } from './../App.js';
+
+function Detail() {
+  let { 재고 } = useContext(Context1);
+
+  return <div>{재고}</div>;
+}
+```
