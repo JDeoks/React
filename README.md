@@ -1185,3 +1185,16 @@ PWA설정된 프로젝트 생성(기존 프로젝트 변경 안됨)
 
 오프라인에서도 사이트 열 수 있게 함  
 index.js에서
+
+```
+// unregister -> register
+serviceWorkerRegistration.register();
+```
+
+바꾼 후 빌드
+
+## 2-28강
+
+자바스크립트는 보통 synchronous(동기적,위부터 순차 처리)하게 처리되는데,  
+시간이 오래걸리는 ajax, 이벤트리스너, setTimeout같은 하수를 사용하면 asynchronous하게 처리됨
+해결하기 위해서는 먼저 처리할 state를 dependencies로 설정한 useEffect함수를 생성함 or 그냥 var 변수 사용
