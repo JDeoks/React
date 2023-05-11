@@ -1,8 +1,11 @@
-import { useParams } from 'react-router-dom';
+// Detail.js
+import { json, useParams } from 'react-router-dom';
 import Nav from 'react-bootstrap/Nav';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import '../App.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { add2Cart } from './../store.js';
 export default Detail;
 
 function Detail(props) {
@@ -10,9 +13,23 @@ function Detail(props) {
   let foundShoes = props.shoes.find(S => S.id == id);
   let [tabNum, setTabNum] = useState(0);
   let [fade2, setFade2] = useState('');
+  let stock = useSelector(state => state.stock);
+  const dispatch = useDispatch(); // useDispatch 훅을 사용하여 dispatch 함수 가져오기
 
   useEffect(() => {
+    if (localStorage.getItem('watched') != null) {
+      let arr = JSON.parse(localStorage.getItem('watched'));
+      if (!arr.includes(id)) {
+        arr.push(id);
+      }
+      localStorage.setItem('watched', JSON.stringify(arr));
+    } else {
+      let arr = [];
+      arr.push(id);
+      localStorage.setItem('watched', JSON.stringify(arr));
+    }
     setTimeout(() => {
+      console.log(localStorage.getItem('watched'));
       setFade2('end');
     });
 
@@ -39,10 +56,19 @@ function Detail(props) {
           <h4 className="pt-5">{foundShoes.title}</h4>
           <p>{foundShoes.content}</p>
           <p>{foundShoes.price}원</p>
-          <button className="btn btn-danger">주문하기</button>
+          <button
+            className="btn btn-danger"
+            onClick={() => {
+              dispatch(add2Cart({ id: foundShoes.id, name: foundShoes.title }));
+              console.log(stock);
+            }}
+          >
+            주문하기
+          </button>
         </div>
       </div>
-      <Nav variant="tabs" defaultActiveKey="link0">
+
+      {/* <Nav variant="tabs" defaultActiveKey="link0">
         <Nav.Item>
           <Nav.Link
             onClick={() => {
@@ -74,7 +100,7 @@ function Detail(props) {
           </Nav.Link>
         </Nav.Item>
       </Nav>
-      <TabContent tabNum={tabNum} />
+      <TabContent tabNum={tabNum} /> */}
     </div>
   );
 }

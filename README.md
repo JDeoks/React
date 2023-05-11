@@ -352,7 +352,8 @@ import { Routes, Route, Link } from 'react-router-dom';
 
 ### useNavigate
 
-event가 발생했을 때, url 조작 가능
+event가 발생했을 때, url 조작 가능.  
+업데이트가 일어나지 않고 이동이 가능함
 
 ```jsx
 import { useNavigate } from 'react-router-dom';
@@ -702,7 +703,7 @@ function Detail() {
 }
 ```
 
-## 2-13, 2-14강
+## 2-13, 2-14, 2-15강
 
 ### Redux
 
@@ -712,6 +713,8 @@ props가 많아질수록 효과적
 ```
 npm install @reduxjs/toolkit react-redux
 ```
+
+#### state 보관, 사용
 
 store.js 생성
 
@@ -774,7 +777,6 @@ function Cart() {
   let a = useSelector(state => {
     return state;
   });
-
   // 약식 코드, user만 저장
   let user = useSelector(state => state.user);
   //한 가지만 출력하려면 .문법
@@ -783,3 +785,403 @@ function Cart() {
   return 생략;
 }
 ```
+
+#### store의 state 변경
+
+store.js에 state변경 함수 생성
+
+```jsx
+let user = createSlice({
+  name: 'user',
+  initialState: 'kim',
+  reducers: {
+    // 파라미터: 기존 state
+    changeName(state) {
+      return 'john ' + state;
+    },
+  },
+});
+
+// 변수에 저장 후 export
+export let { changeName } = user.actions;
+```
+
+import 해서 사용
+
+```jsx
+// Cart.js
+
+import { useDispatch, useSelector } from 'react-redux';
+import { changeName } from './../store.js';
+
+// ...
+
+<button
+  onClick={() => {
+    //dispatch로 꼭 감싸야 실행됨
+    // store.js 로 요청 보내주는 함수
+    dispatch(changeName());
+  }}
+>
+  버튼
+</button>;
+```
+
+## 2-21강
+
+### if문 작성 패턴
+
+#### 컴포넌트 안에서 쓰는 if/else
+
+```jsx
+function Component() {
+  if (true) {
+    return <p>참이면 보여줄 HTML</p>;
+  } else {
+    return null;
+  }
+}
+```
+
+return밖에서 사용하면 if문 사용가능
+
+#### JSX안에서 쓰는 삼항연산자
+
+```jsx
+function Component() {
+  return <div>{1 === 1 ? <p>참이면 보여줄 HTML</p> : null}</div>;
+}
+```
+
+#### if 대신 사용하는 && 연산자
+
+```jsx
+function Component() {
+  return <div>{1 === 1 && <p>참이면 보여줄 HTML</p>}</div>;
+}
+```
+
+#### switch / case 조건문
+
+```jsx
+function Component2() {
+  var user = 'seller';
+  switch (user) {
+    case 'seller':
+      return <h4>판매자 로그인</h4>;
+    case 'customer':
+      return <h4>구매자 로그인</h4>;
+    default:
+      return <h4>그냥 로그인</h4>;
+  }
+}
+```
+
+#### object/array 자료형 응용
+
+```jsx
+function Component() {
+  var keyVal = 'info';
+  return (
+    <div>
+      {
+        {
+          info: <p>상품정보</p>,
+          shipping: <p>배송관련</p>,
+          refund: <p>환불약관</p>,
+        }[keyVal]
+      }
+    </div>
+  );
+}
+
+var tabUI = {
+  info: <p>상품정보</p>,
+  shipping: <p>배송관련</p>,
+  refund: <p>환불약관</p>,
+};
+
+function Component() {
+  var keyVal = 'info';
+  return <div>{tabUI[현재keyVal상태]}</div>;
+}
+```
+
+keyVal값이 현재상태인 컴포넌트 사용
+
+## 2-22강
+
+### localStorage, sessionStorage
+
+브라우저에서 제공하는 클라이언트 사이드 스토리지  
+key-value 형태로 데이터를 저장
+localStorage는 브라우저 탭이나 창 간에 데이터가 공유됨, 재접속해도 남음
+sessionStorage는 세션이 종료되면 데이터가 삭제됨
+
+```jsx
+// 추가, 읽기, 삭제
+localStorage.setItem('데이터이름', '데이터');
+localStorage.getItem('데이터이름');
+localStorage.removeItem('데이터이름');
+
+//a
+```
+
+String값만 저장할수 있으나 Json사용하면 array/object도 저장가능
+
+```jsx
+// JSON.stringify()로 변환
+localStorage.setItem('obj', JSON.stringify({ name: 'kim' }));
+// obj 가져옴
+var a = localStorage.getItem('obj');
+// JSON -> array/object
+var b = JSON.parse(a);
+```
+
+## 2-23강
+
+###
+
+데이터 관리를 위한 라이브러리  
+서버로부터 데이터를 가져오고, 캐시하고, 업데이트하는 데이터 상태 관리를 단순화하고 최적화함  
+ajax 성공/실패/로딩중파악이 쉬움  
+수시로 ajax 재요청해줌  
+실패시 재시도 자동  
+ajax로 가져온 결과는 state공유 필요 없음
+
+- 같은 요청이 2개 -> 1개만 요청
+- 같은 요청을 시간을 두고 함 -> 이전에 한 요청의 결과를 우선 사용
+
+설치
+
+```
+npm install @tanstack/react-query
+```
+
+index.js
+
+```jsx
+import { QueryClient, QueryClientProvider } from 'react-query'; // 임포트
+
+//어플리케이션에서 사용될 React Query의 주요 인스턴스 생성
+const queryClient = new QueryClient(); //
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  //QueryClientProvider 추가
+  <QueryClientProvider client={queryClient}>
+    {' '}
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
+  </QueryClientProvider>
+);
+```
+
+ajax 요청
+
+```jsx
+function App() {
+  let result = useQuery('작명', () =>
+    axios.get('https://codingapple1.github.io/userdata.json').then(a => {
+      return a.data;
+    })
+  );
+}
+```
+
+성공, 실패, 로딩 파악
+
+```jsx
+function App() {
+  let result = useQuery('작명', () =>
+    axios.get('https://codingapple1.github.io/userdata.json').then(a => {
+      return a.data;
+    })
+  );
+
+  return (
+    <div>
+      {result.isLoading && '로딩중'}
+      {result.error && '에러남'}
+      {result.data && result.data.name}
+    </div>
+  );
+}
+```
+
+## 2-24강
+
+### lazy import
+
+html, js 파일이 하나만 생성되는 것이 리액트로 만드는 Single Page Application의 특징 -> 파일 사이즈가 큼 -> 첫 페이지 로딩속도가 매우 느릴 수 있음  
+lazy import로 컴포넌트 내용을 다른 js파일로 쪼개서 첫 페이지 로딩속도 향상시킬 수 있음
+
+```jsx
+import { lazy, Suspense, useEffect, useState } from 'react';
+
+const Detail = lazy(() => import('./routes/Detail.js'));
+const Cart = lazy(() => import('./routes/Cart.js'));
+```
+
+#### 로딩중 UI추가
+
+```jsx
+<Suspense fallback={<div>로딩중임</div>}>
+  <Detail shoes={shoes} />
+</Suspense>
+```
+
+Routes태그 전체를 감싸면 모든 페이지에 대해 로딩중 UI설정 가능
+
+## 2-25강
+
+### memo
+
+컴포넌트가 재렌더링되면 거기 안에 있는 자식컴포넌트는 항상 함께 재렌더링
+업데이트 되는 정보가 없어도 업데이트 됨  
+꼭 재렌더링이 필요할 때만 재랜더링 시킬 때 memo 사용  
+props와 바뀐 props를 비교하는 연산이 추가되므로 필요한 곳에만 사용
+
+```jsx
+let Child = memo(function () {
+  console.log('재렌더링됨');
+  return <div>자식임</div>;
+});
+```
+
+### useMemo
+
+useMemo 안의 함수는 컴포넌트로드시 1회만 실행됨
+
+```jsx
+import {useMemo, useState} from 'react'
+
+function 함수(){
+  return 반복문10억번돌린결과
+}
+
+function Cart(){
+
+  let result = useMemo(()=>{ return 함수() }, [])
+
+  return (
+    <Child />
+    <button onClick={()=>{ setCount(count+1) }}> + </button>
+  )
+}
+```
+
+## 2-26강
+
+### automatic batching
+
+필요없는 재랜더링 방지 기능  
+리액트에서는 원래 state 변경함수가 연달아 있으면 재랜더링 일어나지 않음  
+ajax요청, setTimeout내부의 state변경함수가 있으면 batching 일어나지 않음
+
+state변경함수 실행마다 재렌더링시키고 싶으면 flushSync 사용
+
+```jsx
+setCount(1);
+setName(2);
+setValue(3); //여기서 1번만 재렌더링됨
+```
+
+### useTransition
+
+startTransition() 함수로 state변경함수 감싸면 다른 코드들보다 나중에 처리
+
+```jsx
+import { useState, useTransition } from 'react';
+
+let a = new Array(10000).fill(0);
+
+function App() {
+  let [name, setName] = useState('');
+  // [변수, 함수]
+  // isPending: startTransition() 으로 감싼 코드가 처리중일 때 true로 변하는 변수
+  let [isPending, startTransition] = useTransition();
+
+  return (
+    <div>
+      <input
+        onChange={e => {
+          // startTransition으로 감쌈
+          startTransition(() => {
+            setName(e.target.value);
+          });
+        }}
+      />
+
+      {a.map(() => {
+        return <div>{name}</div>;
+      })}
+    </div>
+  );
+}
+```
+
+### useDeferredValue
+
+state or 변수에 생기는 변동사항을 나중에 처리해줌
+처리 결과는 변수에 저장
+
+```jsx
+import { useState, useTransition, useDeferredValue } from 'react';
+
+let a = new Array(10000).fill(0);
+
+function App() {
+  let [name, setName] = useState('');
+  // name의 변경된 값 저장됨
+  let state1 = useDeferredValue(name);
+
+  return (
+    <div>
+      <input
+        onChange={e => {
+          setName(e.target.value);
+        }}
+      />
+
+      {a.map(() => {
+        // name 변경을 늦게 표시
+        return <div>{state1}</div>;
+      })}
+    </div>
+  );
+}
+```
+
+## 2-27강
+
+### PWA(Progressive Web App)
+
+웹사이트를 모바일 앱처럼 사용할 수 있게 함
+PWA설정된 프로젝트 생성(기존 프로젝트 변경 안됨)
+
+```
+ npx create-react-app 프로젝트명 --template cra-template-pwa
+```
+
+사이트 로컬 경로에 manifest.json, service-worker.js 있으면 브라우저가 pwa로 인식함  
+두 파일은 build한 후에 build폴더 내에 생성됨
+
+#### manifest.json
+
+- "version" : "앱의 버전 ex)1.12 ",
+- "short_name" : "바탕화면에 표시할 이름(12자)",
+- "name" : "기본이름",
+- "icons" : { 여러가지 사이즈별 아이콘 이미지 경로 },
+- "start_url" : "앱아이콘 눌렀을 시 보여줄 메인페이지 경로",. == index.html
+- "display" : "standalone 아니면 fullscreen",
+- "background_color" : "앱 처음 실행시 잠깐 뜨는 splashscreen의 배경색",
+- "theme_color" : "상단 탭색상 등 원하는 테마색상",
+
+#### service-worker.js
+
+오프라인에서도 사이트 열 수 있게 함  
+index.js에서

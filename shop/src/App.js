@@ -14,6 +14,12 @@ import Detail from './routes/Detail';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { createContext } from 'react';
+// 리액트쿼리 임포트
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from '@tanstack/react-query';
 import Cart from './routes/Cart.js';
 let Context1 = createContext();
 
@@ -35,12 +41,15 @@ function App() {
       {/* 네비게이션 바  */}
       <Navbar bg="dark" variant="dark">
         <Container>
-          <Navbar.Brand href="/">ShoeShop</Navbar.Brand>
+          <Navbar.Brand onClick={() => navigate('/')}>ShoeShop</Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link href="/">Home</Nav.Link>
-            <Nav.Link href="/detail">Detail</Nav.Link>
-            <Nav.Link href="/event">Event</Nav.Link>
-            <Nav.Link href="/cart">Cart</Nav.Link>
+            <Nav.Link onClick={() => navigate('/')}>Home</Nav.Link>
+            <Nav.Link onClick={() => navigate('/detail')}>Detail</Nav.Link>
+            <Nav.Link onClick={() => navigate('/event')}>Event</Nav.Link>
+            <Nav.Link onClick={() => navigate('/cart')}>Cart</Nav.Link>
+          </Nav>
+          <Nav className="ms-auto" style={{ color: 'white' }}>
+            반가워요
           </Nav>
         </Container>
       </Navbar>
@@ -56,6 +65,13 @@ function App() {
               {showAlert ? (
                 <div className="alert alert-warning">2초 안에 구매시 할인</div>
               ) : null}
+              <button
+                onClick={() => {
+                  localStorage.removeItem('watched');
+                }}
+              >
+                히스토리 리셋
+              </button>
               <InputNum />
               <div className="main-bg"></div>
               <Container>
